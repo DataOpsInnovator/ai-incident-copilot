@@ -17,7 +17,7 @@ No API keys. No internet. Zero dollars per query.
 </div>
 
 <p align="center">
-  <img src="apps/ai-incident-copilot/img/streamlit-hero.png" alt="AI Incident Copilot — agent answer with cited incident, runbook, and on-call handle" width="900" />
+  <img src="img/streamlit-hero.png" alt="AI Incident Copilot — agent answer with cited incident, runbook, and on-call handle" width="900" />
 </p>
 
 ---
@@ -208,7 +208,7 @@ PYTHONPATH=src streamlit run src/copilot/ui/app.py --server.port 8501
 Open <http://localhost:8501>. Type a question. Watch the agent show its work.
 
 <p align="center">
-  <img src="apps/ai-incident-copilot/img/streamlit-initial.png" alt="Streamlit landing page with three inline sample-query buttons above the input" width="900" />
+  <img src="img/streamlit-initial.png" alt="Streamlit landing page with three inline sample-query buttons above the input" width="900" />
 </p>
 
 ---
@@ -274,7 +274,7 @@ The UI surfaces every step the agent took — which tool it called, what argumen
 and what came back — so nothing is hidden behind the answer:
 
 <p align="center">
-  <img src="apps/ai-incident-copilot/img/streamlit-tool-calls.png" alt="Expanded Tool calls panel showing the agent's ReAct sequence" width="900" />
+  <img src="img/streamlit-tool-calls.png" alt="Expanded Tool calls panel showing the agent's ReAct sequence" width="900" />
 </p>
 
 ### Why one converged DB instead of two
@@ -347,7 +347,7 @@ you actually asked for.
 The third query lands on a single relational tool — the same engine, no vector search needed:
 
 <p align="center">
-  <img src="apps/ai-incident-copilot/img/streamlit-service-owner.png" alt="Service-owner metrics showing auth-service owner and on-call handle" width="900" />
+  <img src="img/streamlit-service-owner.png" alt="Service-owner metrics showing auth-service owner and on-call handle" width="900" />
 </p>
 
 ---

@@ -1,0 +1,43 @@
+# Copyright (c) 2026 Oracle and/or its affiliates.
+# Licensed under the Universal Permissive License v 1.0
+# as shown at https://oss.oracle.com/licenses/upl/.
+
+name: ai-incident-copilot smoke tests
+
+on:
+  pull_request:
+    paths:
+      - "apps/ai-incident-copilot/src/**"
+      - "apps/ai-incident-copilot/tests/test_smoke.py"
+      - "apps/ai-incident-copilot/requirements.txt"
+      - ".github/workflows/ai_incident_copilot_smoke.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/ai-incident-copilot/src/**"
+      - "apps/ai-incident-copilot/tests/test_smoke.py"
+      - "apps/ai-incident-copilot/requirements.txt"
+      - ".github/workflows/ai_incident_copilot_smoke.yml"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/ai-incident-copilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: apps/ai-incident-copilot/requirements.txt
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Smoke tests
+        env:
+          PYTHONPATH: src
+        run: pytest tests/test_smoke.py -v

@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant Py as Python (host venv)
+    participant L as TNS listener :1521
+    participant DB as FREEPDB1 / copilot
+    participant Idx as HNSW index<br/>(vector_memory_size=512M)
+
+    Py->>L: oracledb thin connect (copilot/Welcome_123)
+    L->>DB: open session
+    Py->>DB: SELECT … FROM incidents
+    DB-->>Py: 0 rows (empty — no seed yet)
+    Note over DB,Idx: Schema is in place,<br/>just needs data + embeddings.

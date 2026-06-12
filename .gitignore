@@ -1,0 +1,47 @@
+# ── Python / venv ──
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# ── Secrets ──
+.env
+.env.local
+
+# ── OS / IDE ──
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# ── Claude Code local state ──
+.claude/
+
+# ── CONFIDENTIAL: sponsorship brief and related documents ──
+# Per agency contract, brief contents are confidential and must never be committed.
+Brief - Rahul Wagh - Oracle - *.pdf
+*.brief.pdf
+
+# ── Personal prep / scripts / runbooks (root only) ──
+# Private notes for recording. The published project lives under apps/.
+/animation-1-script.md
+/animations-storyboard.md
+/demo-queries.md
+/demo-script.md
+/demo-todo.md
+/my-script.md
+/progress-flow.md
+/recording-preflight.md
+/recording-runbook.md
+/SOP.md
+/workflows.md
+/README-for-me.md
+/requirements.txt
+
+# ── Personal Keynote source for video diagrams ──
+img/keynote-reference/

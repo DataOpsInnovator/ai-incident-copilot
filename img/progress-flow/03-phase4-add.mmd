@@ -1,0 +1,10 @@
+flowchart LR
+    A["Synthetic data<br/>~50 incidents<br/>~20 runbooks<br/>services catalog"]
+      --> B["MiniLM embedder<br/>all-MiniLM-L6-v2<br/>→ 384-dim FLOAT32"]
+      --> C["Bulk INSERT via oracledb<br/>VECTOR column populated"]
+      --> D["HNSW index auto-builds<br/>graph in vector_memory_size pool"]
+
+    classDef done fill:#0e9f6e,stroke:#057a55,color:#fff
+    classDef next fill:#f59e0b,stroke:#b45309,color:#000
+    class B,D done
+    class A,C next

@@ -1,0 +1,44 @@
+sequenceDiagram
+    autonumber
+    actor User
+    participant UI as Streamlit<br/>:8501
+    participant API as FastAPI<br/>:8000 /diagnose
+    participant Agent as LangChain<br/>agent (create_agent)
+    participant LLM as Ollama<br/>Llama 3.1 8B
+    participant Embed as MiniLM
+    participant DB as Oracle 26ai
+    participant HNSW as HNSW index
+
+    User->>UI: types query, clicks Diagnose
+    UI->>API: POST /diagnose {query}
+    API->>Agent: diagnose(query)
+
+    Agent->>LLM: system_prompt + 4 tool schemas<br/>+ user query
+    LLM-->>Agent: tool_call: find_similar_incidents_filtered<br/>{svc, region, category}
+
+    Agent->>Embed: encode(query)
+    Embed-->>Agent: 384-dim query vector
+
+    Agent->>DB: SELECT … VECTOR_DISTANCE(embedding, :v, COSINE)<br/>WHERE service_name=:s AND region=:r …
+    DB->>HNSW: graph traversal for top-K
+    HNSW-->>DB: candidate row IDs
+    DB-->>Agent: top-5 incidents (JSON)
+
+    Agent->>LLM: ToolMessage(incidents)
+    LLM-->>Agent: tool_call: get_runbooks_for_incident<br/>{incident_id: 108}
+
+    Agent->>DB: SELECT … runbooks JOIN incident_runbooks<br/>WHERE incident_id=108 (no vector)
+    DB-->>Agent: 2 latency runbooks
+
+    Agent->>LLM: ToolMessage(runbooks)
+    LLM-->>Agent: tool_call: get_service_owner<br/>{service_name: "payment-service"}
+
+    Agent->>DB: SELECT … FROM services<br/>WHERE service_name=:s (pure relational)
+    DB-->>Agent: owner row
+
+    Agent->>LLM: ToolMessage(owner)
+    LLM-->>Agent: final assistant message<br/>(synthesized answer)
+
+    Agent-->>API: {answer, tool_calls, tool_results}
+    API-->>UI: JSON response
+    UI->>User: Answer + Tool calls + Incidents +<br/>Runbooks + Owner panels

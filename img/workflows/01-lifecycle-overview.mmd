@@ -1,0 +1,27 @@
+flowchart LR
+    subgraph SETUP["🛠️  Phase A · Setup (run once, offline, ~23s)"]
+        direction TB
+        A1["Generate synthetic data<br/>(seed.py templates)"]
+          --> A2["Embed bodies<br/>via MiniLM"]
+          --> A3["INSERT into Oracle 26ai<br/>(VECTOR + relational columns)"]
+          --> A4["HNSW index<br/>auto-builds graph"]
+    end
+
+    subgraph QUERY["🤖 Phase B · Query (run per user, online, ~5-8s warm)"]
+        direction TB
+        B1["User asks question<br/>via Streamlit UI"]
+          --> B2["FastAPI /diagnose<br/>passes to agent"]
+          --> B3["LangChain agent<br/>asks Llama 3.1 which tool"]
+          --> B4["Tool runs SQL<br/>(vector + filter, or relational)"]
+          --> B5["Tool result<br/>fed back to LLM"]
+          --> B6["LLM may call<br/>another tool (loop)"]
+          --> B7["LLM synthesizes<br/>final answer"]
+          --> B8["Answer + trace<br/>rendered in UI"]
+    end
+
+    SETUP -.populates.-> QUERY
+
+    classDef setup fill:#0e9f6e,stroke:#057a55,color:#fff
+    classDef query fill:#3b82f6,stroke:#1e40af,color:#fff
+    class A1,A2,A3,A4 setup
+    class B1,B2,B3,B4,B5,B6,B7,B8 query

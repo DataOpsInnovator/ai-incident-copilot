@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant Py as Python (host venv)
+    participant Emb as MiniLM
+    participant DB as FREEPDB1 / copilot
+    participant Idx as HNSW index
+
+    Py->>Emb: encode("payment-service p99 spiked…")
+    Emb-->>Py: 384-dim vector
+    Py->>DB: SELECT … FROM incidents<br/>ORDER BY VECTOR_DISTANCE(embedding, :v, COSINE)<br/>FETCH FIRST 5 ROWS ONLY
+    DB->>Idx: graph traversal
+    Idx-->>DB: top-5 candidate row IDs
+    DB-->>Py: 5 nearest incidents

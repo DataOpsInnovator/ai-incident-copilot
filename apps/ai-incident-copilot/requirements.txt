@@ -1,0 +1,24 @@
+# AI Incident Copilot — runtime dependencies
+# Tested with Python 3.10+
+
+# Oracle AI Database driver (thin mode — no Instant Client needed)
+oracledb>=2.5.0
+
+# LangChain core + the dedicated Oracle integration (peer apps in this hub
+# use langchain-oracledb, not the older OracleVS in langchain-community)
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-oracledb>=0.1.0
+langchain-ollama>=0.2.0
+
+# Local embedding model — MiniLM, 384-dim
+sentence-transformers>=3.0.0
+
+# API + UI
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+streamlit>=1.40.0
+
+# Config + .env
+python-dotenv>=1.0.0
+pydantic-settings>=2.0.0

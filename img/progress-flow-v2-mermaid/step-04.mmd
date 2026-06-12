@@ -1,0 +1,43 @@
+---
+title: "Step 4 of 8 · Create user 'copilot'"
+---
+flowchart TB
+  H["📍 <b>Step 4 of 8: Create user 'copilot'</b>"]:::header
+
+  subgraph PROG[" "]
+    direction LR
+    P1(("1<br/>Mac"))
+    P2(("2<br/>Docker"))
+    P3(("3<br/>Oracle"))
+    P4(("4<br/>User"))
+    P5(("5<br/>Tables"))
+    P6(("6<br/>Indexes"))
+    P7(("7<br/>Python"))
+    P8(("8<br/>Connect"))
+    P1 ~~~ P2 ~~~ P3 ~~~ P4 ~~~ P5 ~~~ P6 ~~~ P7 ~~~ P8
+  end
+
+  subgraph MAC["💻 Your Mac"]
+    direction TB
+    subgraph DOCKER["🐳 Docker"]
+      direction TB
+      subgraph CONTAINER["📦 oracle26ai container"]
+        direction TB
+        subgraph DB["🗄️ Oracle Database"]
+          direction TB
+          USER["👤 user: copilot"]
+        end
+      end
+    end
+  end
+
+  H ~~~ PROG
+  PROG ~~~ MAC
+
+  classDef header fill:#fef3c7,stroke:#f59e0b,stroke-width:3px,color:#111
+  classDef active fill:#fbbf24,stroke:#b45309,stroke-width:4px,color:#111
+  classDef done fill:#bbf7d0,stroke:#15803d,color:#111
+  classDef pending fill:#f3f4f6,stroke:#d1d5db,color:#9ca3af
+  class P4,USER active
+  class P1,P2,P3,MAC,DOCKER,CONTAINER,DB done
+  class P5,P6,P7,P8 pending

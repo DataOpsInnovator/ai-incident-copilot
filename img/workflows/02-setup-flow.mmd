@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    participant Seeder as seed.py
+    participant MiniLM as MiniLM<br/>(sentence-transformers)
+    participant DB as Oracle 26ai<br/>FREEPDB1 / copilot
+    participant HNSW as HNSW vector index<br/>(in vector_memory_size pool)
+
+    Note over Seeder: Generate from templates:<br/>50 incident bodies, 15 runbooks,<br/>20 services. Deterministic seed.
+
+    Seeder->>DB: DELETE child + parent tables<br/>(FK-safe order, idempotent)
+    Seeder->>DB: INSERT 20 services<br/>(pure relational, no vector yet)
+
+    Seeder->>MiniLM: embed_batch(50 incident bodies)
+    MiniLM-->>Seeder: 50 × 384-dim FLOAT32 vectors<br/>(L2-normalised)
+
+    Seeder->>MiniLM: embed_batch(15 runbook bodies)
+    MiniLM-->>Seeder: 15 × 384-dim FLOAT32 vectors
+
+    Seeder->>DB: INSERT 50 incidents<br/>(text columns + VECTOR(384, FLOAT32))
+    DB->>HNSW: graph auto-updates<br/>per inserted vector
+    Seeder->>DB: INSERT 15 runbooks<br/>(text columns + VECTOR)
+    DB->>HNSW: graph auto-updates
+
+    Seeder->>DB: INSERT 107 incident_runbooks<br/>(category-matched links)
+    Seeder->>DB: COMMIT
+
+    Note over Seeder,HNSW: Schema is now ready for queries.<br/>Total time: ~23 seconds on a laptop.

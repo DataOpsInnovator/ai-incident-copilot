@@ -1,0 +1,44 @@
+flowchart TB
+    subgraph HOST["🖥️  Mac host"]
+        VENV[".venv/<br/>Python 3.10.5<br/>oracledb · langchain-oracledb<br/>langchain-ollama · sentence-transformers"]
+        OLLAMA["Ollama daemon<br/>:11434<br/>📦 llama3.1:8b"]
+        SCRIPTS["scripts/<br/>setup_db.sh · schema.sql"]
+        SEED["⏭️  src/copilot/db/seed.py<br/>(NEXT — Phase 4)"]
+        AGENT["⏭️  src/copilot/agent/copilot.py<br/>(Phase 5)"]
+    end
+
+    subgraph DOCKER["🐳 Docker container · oracle26ai"]
+        direction TB
+        LISTENER["TNS listener :1521"]
+        subgraph CDB["CDB · FREE"]
+            SPFILE["SPFILE<br/>vector_memory_size = 512M ✅"]
+            subgraph PDB["PDB · FREEPDB1"]
+                COPILOT["USER copilot<br/>DEFAULT TABLESPACE USERS"]
+                TABLES["4 tables<br/>SERVICES · INCIDENTS<br/>RUNBOOKS · INCIDENT_RUNBOOKS"]
+                HNSW["2 HNSW vector indexes<br/>incidents_embedding_hnsw<br/>runbooks_embedding_hnsw"]
+                BTREE["3 B-tree indexes<br/>service · category × 2"]
+            end
+        end
+    end
+
+    VOL[("💾 docker volume<br/>oracle26ai-data")]
+
+    SCRIPTS -->|bootstraps| COPILOT
+    SCRIPTS -->|applies schema| TABLES
+    TABLES --> HNSW
+    TABLES --> BTREE
+    CDB -.persists.-> VOL
+    VENV -->|oracledb thin · TCP| LISTENER
+    LISTENER --> CDB
+
+    SEED -.->|Phase 4| TABLES
+    SEED -.->|Phase 4| HNSW
+    AGENT -.->|Phase 5| OLLAMA
+    AGENT -.->|Phase 5| VENV
+
+    classDef done fill:#0e9f6e,stroke:#057a55,color:#fff
+    classDef next fill:#f59e0b,stroke:#b45309,color:#000
+    classDef later fill:#9ca3af,stroke:#4b5563,color:#fff
+    class VENV,OLLAMA,SCRIPTS,LISTENER,SPFILE,COPILOT,TABLES,HNSW,BTREE,VOL done
+    class SEED next
+    class AGENT later
